@@ -82,9 +82,8 @@ define([
             var self = this,
                 formData = new FormData();
 
-            formData.append('stripe_token', token);
+            formData.append('payment_intent_id', token);
             formData.append('csrfmiddlewaretoken', $('[name=csrfmiddlewaretoken]', self.$paymentForm).val());
-            formData.append('basket', $('[name=basket]', self.$paymentForm).val());
 
             fetch(self.postUrl, {
                 credentials: 'include',

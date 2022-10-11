@@ -74,14 +74,8 @@ class StripeSubmitView(EdxOrderPlacementMixin, BasePaymentSubmitView):
 
 
 class StripeCheckoutView(EdxOrderPlacementMixin, BasePaymentSubmitView):
-    http_method_names = ['get', 'post', 'head']
-
-    def form_valid(self, form):
-        """
-        TODO: remove. BasePaymentSubmitView is has form_valid as abstract class.
-        We dont actually need to use this, so we should change what we're
-        inheriting from.
-        """
+    http_method_names = ['post', 'head']
+    form_class = StripeSubmitForm
 
     @property
     def payment_processor(self):
@@ -141,13 +135,13 @@ class StripeCheckoutView(EdxOrderPlacementMixin, BasePaymentSubmitView):
             return None
         return basket
 
-    def get(self, request):
+    def form_valid(self, form):
         """Handle an incoming user returned to us by Stripe after approving payment."""
         # TBD: we're gonna want to check the $$ price of paymentIntentId
         # to see if it suceeded or failed
         # ... and then potentially compare it against what our basket has?
-        stripe_response = request.GET.dict()
-        payment_intent_id = stripe_response.get('payment_intent')
+        breakpoint()
+        payment_intent_id = form.cleaned_data.get('payment_intent_id')
         basket = self._get_basket(payment_intent_id)
 
         if not basket:
